@@ -87,17 +87,58 @@
                     <button class="btn-close" id="closeModal">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <div class="form-group">
-                        <label>Nome do App</label>
-                        <input type="text" id="saasName" placeholder="Ex: Clawdbot">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Nome do Produto</label>
+                            <input type="text" id="saasName" placeholder="Ex: BannerBear">
+                        </div>
+                        <div class="form-group">
+                            <label>URL</label>
+                            <input type="text" id="saasUrl" placeholder="https://...">
+                        </div>
                     </div>
+                    
                     <div class="form-group">
-                        <label>URL / Pesquisa</label>
-                        <input type="text" id="saasUrl" placeholder="Ex: clawdbot.com ou termo de busca">
+                        <label>Descrição Curta</label>
+                        <textarea id="saasDesc" placeholder="O que faz? Quando lançou?" rows="2"></textarea>
                     </div>
+
+                    <div class="section-title">📊 Tração</div>
+                    <div class="form-row three-cols">
+                        <div class="form-group">
+                            <label>MRR ($)</label>
+                            <input type="text" id="saasMrr" placeholder="5000">
+                        </div>
+                        <div class="form-group">
+                            <label>Clientes</label>
+                            <input type="text" id="saasCustomers" placeholder="100">
+                        </div>
+                        <div class="form-group">
+                            <label>Ticket ($)</label>
+                            <input type="text" id="saasTicket" placeholder="49">
+                        </div>
+                    </div>
+
+                    <div class="section-title">🧠 Análise</div>
                     <div class="form-group">
-                        <label>Descrição (Opcional)</label>
-                        <textarea id="saasDesc" placeholder="O que ele faz?"></textarea>
+                        <label>Por que funciona?</label>
+                        <textarea id="saasWhy" placeholder="Fatores de sucesso..." rows="2"></textarea>
+                    </div>
+
+                    <div class="section-title">🛠️ Replicação</div>
+                    <div class="form-group">
+                        <label>Stack Tecnológico</label>
+                        <input type="text" id="saasStack" placeholder="Ex: React, Node, Stripe">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Tempo MVP</label>
+                            <input type="text" id="saasTime" placeholder="Ex: 2 semanas">
+                        </div>
+                        <div class="form-group">
+                            <label>Custo Mensal</label>
+                            <input type="text" id="saasCost" placeholder="Ex: $20">
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">

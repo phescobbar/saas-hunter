@@ -26,9 +26,7 @@ class SaasHunter {
     addTool(data) {
         const tool = {
             id: Date.now().toString(36),
-            name: data.name,
-            url: data.url,
-            desc: data.desc,
+            ...data,
             addedAt: new Date().toISOString()
         };
         this.tools.unshift(tool);
@@ -56,17 +54,24 @@ class SaasHunter {
         closeBtns.forEach(b => b.onclick = () => modal.classList.remove('open'));
         
         saveBtn.onclick = () => {
-            const name = document.getElementById('saasName').value.trim();
-            const url = document.getElementById('saasUrl').value.trim();
-            const desc = document.getElementById('saasDesc').value.trim();
+            const data = {
+                name: document.getElementById('saasName').value.trim(),
+                url: document.getElementById('saasUrl').value.trim(),
+                desc: document.getElementById('saasDesc').value.trim(),
+                mrr: document.getElementById('saasMrr').value.trim(),
+                customers: document.getElementById('saasCustomers').value.trim(),
+                ticket: document.getElementById('saasTicket').value.trim(),
+                why: document.getElementById('saasWhy').value.trim(),
+                stack: document.getElementById('saasStack').value.trim(),
+                time: document.getElementById('saasTime').value.trim(),
+                cost: document.getElementById('saasCost').value.trim()
+            };
 
-            if (name && url) {
-                this.addTool({ name, url, desc });
+            if (data.name && data.url) {
+                this.addTool(data);
                 modal.classList.remove('open');
                 // Clear fields
-                document.getElementById('saasName').value = '';
-                document.getElementById('saasUrl').value = '';
-                document.getElementById('saasDesc').value = '';
+                document.querySelectorAll('input, textarea').forEach(el => el.value = '');
             } else {
                 alert('Nome e URL são obrigatórios');
             }
@@ -89,7 +94,8 @@ class SaasHunter {
             const q = query.toLowerCase();
             filtered = this.tools.filter(t => 
                 t.name.toLowerCase().includes(q) || 
-                t.desc.toLowerCase().includes(q)
+                t.desc.toLowerCase().includes(q) ||
+                (t.stack && t.stack.toLowerCase().includes(q))
             );
         }
 
@@ -116,6 +122,20 @@ class SaasHunter {
                     ${tool.url}
                 </a>
                 <p class="saas-desc">${tool.desc || 'Sem descrição.'}</p>
+                
+                ${tool.mrr || tool.customers ? `
+                <div class="saas-stats" style="display:flex;gap:1rem;margin:1rem 0;font-family:var(--font-mono);font-size:0.8rem;color:var(--accent-primary)">
+                    ${tool.mrr ? `<span>💰 $${tool.mrr}/mês</span>` : ''}
+                    ${tool.customers ? `<span>👥 ${tool.customers} clientes</span>` : ''}
+                </div>
+                ` : ''}
+
+                ${tool.stack ? `
+                <div class="saas-stack" style="font-size:0.75rem;color:var(--text-secondary);margin-bottom:0.5rem">
+                    🛠️ ${tool.stack}
+                </div>
+                ` : ''}
+
                 <div class="saas-meta">
                     <span>Adicionado em ${new Date(tool.addedAt).toLocaleDateString()}</span>
                 </div>
