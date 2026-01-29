@@ -15,7 +15,27 @@ class SaasHunter {
     // ===== Storage =====
     loadTools() {
         const saved = localStorage.getItem('saas_hunter_tools');
-        this.tools = saved ? JSON.parse(saved) : [];
+        if (saved) {
+            this.tools = JSON.parse(saved);
+        } else {
+            this.tools = [
+                {
+                    id: 'bannerbear_init',
+                    name: 'Bannerbear',
+                    url: 'bannerbear.com',
+                    desc: 'API para geração automática de imagens e vídeos para redes sociais e e-commerce.',
+                    mrr: '50000',
+                    customers: '500+',
+                    ticket: '49',
+                    why: 'Resolve o problema manual de criar centenas de variações de imagens. Foca em desenvolvedores (API first) e No-Code (integração Zapier).',
+                    stack: 'Ruby on Rails, FFmpeg, Vercel',
+                    time: '3 meses',
+                    cost: '50',
+                    addedAt: new Date().toISOString()
+                }
+            ];
+            this.saveTools();
+        }
     }
 
     saveTools() {
