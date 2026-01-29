@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaaS Hunter | Radar de Ferramentas</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app">
+        <!-- Ambient Background -->
+        <div class="ambient-bg">
+            <div class="orb orb-1"></div>
+            <div class="orb orb-2"></div>
+        </div>
+
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <circle cx="12" cy="12" r="4"/>
+                        <line x1="21.17" y1="8" x2="12" y2="8"/>
+                        <line x1="3.95" y1="6.06" x2="8.54" y2="14"/>
+                        <line x1="10.88" y1="21.94" x2="15.46" y2="14"/>
+                    </svg>
+                </div>
+                <span class="logo-text">SaaS<span class="accent">Hunter</span></span>
+                <span class="logo-badge">by Alphonse 🦾</span>
+            </div>
+            <div class="header-actions">
+                <button class="btn-primary" id="addSaasBtn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19"/>
+                        <line x1="5" y1="12" x2="19" y2="12"/>
+                    </svg>
+                    Adicionar SaaS
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main">
+            <!-- Search & Filter -->
+            <div class="search-bar">
+                <div class="search-input">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"/>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                    </svg>
+                    <input type="text" id="searchInput" placeholder="Buscar ferramentas...">
+                </div>
+                <div class="stats">
+                    <span id="totalCount">0</span> ferramentas encontradas
+                </div>
+            </div>
+
+            <!-- Grid -->
+            <div class="saas-grid" id="saasGrid">
+                <!-- Cards will be injected here -->
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-state" id="emptyState">
+                <div class="empty-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M16 16s-1.5-2-4-2-4 2-4 2"/>
+                        <line x1="9" y1="9" x2="9.01" y2="9"/>
+                        <line x1="15" y1="9" x2="15.01" y2="9"/>
+                    </svg>
+                </div>
+                <h3>Nenhum SaaS encontrado</h3>
+                <p>O radar ainda não detectou nada.</p>
+            </div>
+        </main>
+
+        <!-- Add Modal -->
+        <div class="modal-overlay" id="addModal">
+            <div class="modal">
+                <div class="modal-header">
+                    <h3>Novo SaaS</h3>
+                    <button class="btn-close" id="closeModal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Nome do App</label>
+                        <input type="text" id="saasName" placeholder="Ex: Clawdbot">
+                    </div>
+                    <div class="form-group">
+                        <label>URL / Pesquisa</label>
+                        <input type="text" id="saasUrl" placeholder="Ex: clawdbot.com ou termo de busca">
+                    </div>
+                    <div class="form-group">
+                        <label>Descrição (Opcional)</label>
+                        <textarea id="saasDesc" placeholder="O que ele faz?"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-secondary" id="cancelAdd">Cancelar</button>
+                    <button class="btn-primary" id="saveSaas">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
