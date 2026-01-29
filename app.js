@@ -18,6 +18,7 @@ class SaasHunter {
         if (saved) {
             this.tools = JSON.parse(saved);
         } else {
+            // Initial Data
             this.tools = [
                 {
                     id: 'bannerbear_init',
@@ -31,6 +32,7 @@ class SaasHunter {
                     stack: 'Ruby on Rails, FFmpeg, Vercel',
                     time: '3 meses',
                     cost: '50',
+                    briefing: 'Bannerbear é uma ferramenta de automação de imagem e vídeo. Ela permite que empresas gerem visuais para mídias sociais, e-commerce e email marketing via API.\n\nPrincipais Funcionalidades:\n- Editor de Templates Drag & Drop\n- API REST simples\n- Integração nativa com Zapier e Airtable\n- Geração de PDFs e Vídeos curtos\n\nCaso de Uso:\nUma empresa de notícias pode usar o Bannerbear para gerar automaticamente uma imagem de capa para cada novo artigo publicado no blog, usando o título e a imagem de destaque do post, sem precisar abrir o Photoshop.',
                     addedAt: new Date().toISOString()
                 }
             ];
@@ -64,7 +66,7 @@ class SaasHunter {
 
     // ===== Events =====
     bindEvents() {
-        // Modal
+        // Add Modal
         const modal = document.getElementById('addModal');
         const openBtn = document.getElementById('addSaasBtn');
         const closeBtns = [document.getElementById('closeModal'), document.getElementById('cancelAdd')];
@@ -84,23 +86,39 @@ class SaasHunter {
                 why: document.getElementById('saasWhy').value.trim(),
                 stack: document.getElementById('saasStack').value.trim(),
                 time: document.getElementById('saasTime').value.trim(),
-                cost: document.getElementById('saasCost').value.trim()
+                cost: document.getElementById('saasCost').value.trim(),
+                briefing: document.getElementById('saasBriefing').value.trim()
             };
 
             if (data.name && data.url) {
                 this.addTool(data);
                 modal.classList.remove('open');
-                // Clear fields
                 document.querySelectorAll('input, textarea').forEach(el => el.value = '');
             } else {
                 alert('Nome e URL são obrigatórios');
             }
         };
 
+        // Briefing Modal
+        const briefingModal = document.getElementById('briefingModal');
+        const closeBriefingBtns = [document.getElementById('closeBriefing'), document.getElementById('closeBriefingBtn')];
+        
+        closeBriefingBtns.forEach(b => b.onclick = () => briefingModal.classList.remove('open'));
+
         // Search
         document.getElementById('searchInput').addEventListener('input', (e) => {
             this.render(e.target.value);
         });
+    }
+
+    // ===== Features =====
+    showBriefing(id) {
+        const tool = this.tools.find(t => t.id === id);
+        if (tool && tool.briefing) {
+            document.getElementById('briefingTitle').textContent = `Briefing: ${tool.name}`;
+            document.getElementById('briefingContent').textContent = tool.briefing;
+            document.getElementById('briefingModal').classList.add('open');
+        }
     }
 
     // ===== Render =====
@@ -132,7 +150,10 @@ class SaasHunter {
             <div class="saas-card">
                 <div class="saas-header">
                     <h3 class="saas-title">${tool.name}</h3>
-                    <button onclick="hunter.deleteTool('${tool.id}')" style="background:none;border:none;color:var(--text-secondary);cursor:pointer">&times;</button>
+                    <div style="display:flex;gap:0.5rem">
+                        ${tool.briefing ? `<button onclick="hunter.showBriefing('${tool.id}')" class="btn-briefing">Ver Briefing</button>` : ''}
+                        <button onclick="hunter.deleteTool('${tool.id}')" style="background:none;border:none;color:var(--text-secondary);cursor:pointer">&times;</button>
+                    </div>
                 </div>
                 <a href="${tool.url.startsWith('http') ? tool.url : 'https://' + tool.url}" target="_blank" class="saas-link">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px">
@@ -166,3 +187,4 @@ class SaasHunter {
 
 // Init
 const hunter = new SaasHunter();
+window.hunter = hunter; // Expose for onclick handlers
