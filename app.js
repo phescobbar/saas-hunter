@@ -13,31 +13,28 @@ class SaasHunter {
     }
 
     // ===== Storage =====
-    loadTools() {
-        const saved = localStorage.getItem('saas_hunter_tools');
-        if (saved) {
-            this.tools = JSON.parse(saved);
-        } else {
-            // Initial Data
-            this.tools = [
-                {
-                    id: 'bannerbear_init',
-                    name: 'Bannerbear',
-                    url: 'bannerbear.com',
-                    desc: 'API para geração automática de imagens e vídeos para redes sociais e e-commerce.',
-                    mrr: '50000',
-                    customers: '500+',
-                    ticket: '49',
-                    why: 'Resolve o problema manual de criar centenas de variações de imagens. Foca em desenvolvedores (API first) e No-Code (integração Zapier).',
-                    stack: 'Ruby on Rails, FFmpeg, Vercel',
-                    time: '3 meses',
-                    cost: '50',
-                    briefing: 'Bannerbear é uma ferramenta de automação de imagem e vídeo. Ela permite que empresas gerem visuais para mídias sociais, e-commerce e email marketing via API.\n\nPrincipais Funcionalidades:\n- Editor de Templates Drag & Drop\n- API REST simples\n- Integração nativa com Zapier e Airtable\n- Geração de PDFs e Vídeos curtos\n\nCaso de Uso:\nUma empresa de notícias pode usar o Bannerbear para gerar automaticamente uma imagem de capa para cada novo artigo publicado no blog, usando o título e a imagem de destaque do post, sem precisar abrir o Photoshop.',
-                    addedAt: new Date().toISOString()
+    async loadTools() {
+        const localSaved = localStorage.getItem('saas_hunter_tools');
+        let localTools = localSaved ? JSON.parse(localSaved) : [];
+
+        try {
+            const response = await fetch('saas.json');
+            if (response.ok) {
+                const repoTools = await response.json();
+                const localIds = new Set(localTools.map(t => t.id));
+                const newTools = repoTools.filter(t => !localIds.has(t.id));
+                
+                if (newTools.length > 0) {
+                    localTools = [...newTools, ...localTools];
+                    this.saveTools();
                 }
-            ];
-            this.saveTools();
+            }
+        } catch (e) {
+            console.log('Offline or no saas.json');
         }
+
+        this.tools = localTools;
+        this.render();
     }
 
     saveTools() {
