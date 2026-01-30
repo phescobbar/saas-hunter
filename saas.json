@@ -1,5 +1,20 @@
 [
     {
+        "id": "siteguru_20260130",
+        "name": "SiteGuru",
+        "url": "siteguru.co",
+        "desc": "Auditoria SEO simplificada que transforma dados complexos em uma lista de tarefas priorizada.",
+        "mrr": "14000",
+        "customers": "1000+",
+        "ticket": "49",
+        "why": "Resolve a 'overwhelming' (sobrecarga) de ferramentas como Ahrefs/Semrush para clientes menores. Foca em 'Actionable Insights' (O que consertar agora).",
+        "stack": "PHP (Laravel), MySQL, Vue.js (Provável, stack clássica de indie hacker)",
+        "time": "3 meses",
+        "cost": "50",
+        "briefing": "SiteGuru é uma ferramenta de auditoria SEO focada em simplicidade e ação.\n\n📌 Diferencial Único:\nEnquanto ferramentas tradicionais (Semrush, Ahrefs) jogam milhões de dados na sua cara, o SiteGuru te dá uma 'To-Do List' priorizada. É SEO para quem não quer ser especialista técnico em SEO.\n\n🛠️ Funcionalidades:\n- Auditoria Técnica (Links quebrados, velocidade, meta tags).\n- Relatórios White-Label para agências (enviar pro cliente com sua marca).\n- Monitoramento semanal automático.\n- Integração com Google Search Console.\n\n💰 Modelo:\nSaaS B2B ($49 a $199/mês). Foca em Agências e Donos de Sites.\n\n🚀 Por que funciona?\nAgências pequenas precisam entregar relatórios de SEO para clientes mas não têm tempo de analisar dados brutos. O SiteGuru automatiza a 'consultoria' básica.",
+        "addedAt": "2026-01-30T12:06:00.000Z"
+    },
+    {
         "id": "cuppa_ai_20260129",
         "name": "Cuppa AI",
         "url": "cuppa.sh",
