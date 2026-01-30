@@ -5,22 +5,36 @@ const TURSO_CONFIG = {
 };
 
 async function queryTurso(sql, params = []) {
-    const response = await fetch(TURSO_CONFIG.url, {
+    // Pipeline v2 endpoint is more robust for fetch
+    const args = params.map(p => {
+        if (typeof p === 'number') return { type: 'integer', value: p };
+        if (p === null) return { type: 'null', value: null };
+        return { type: 'text', value: String(p) };
+    });
+
+    const response = await fetch(`${TURSO_CONFIG.url}/v2/pipeline`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${TURSO_CONFIG.authToken}`,
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ statements: [{ sql, args: params }] })
+        body: JSON.stringify({
+            requests: [
+                { type: 'execute', stmt: { sql, args } },
+                { type: 'close' }
+            ]
+        })
     });
 
     const data = await response.json();
     if (!response.ok) throw new Error(`Turso Error: ${JSON.stringify(data)}`);
     
-    // Standard format for Turso /statements endpoint
-    const result = data[0].results;
+    const executeResult = data.results.find(r => r.type === 'execute');
+    if (executeResult.error) throw new Error(executeResult.error.message);
+    
+    const result = executeResult.response.result;
     return {
-        cols: result.columns.map(name => ({ name })),
+        cols: result.cols.map(c => ({ name: c.name })),
         rows: result.rows.map(row => row.map(value => ({ value })))
     };
 }
