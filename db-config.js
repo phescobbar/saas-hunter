@@ -27,36 +27,29 @@ async function executeTursoQuery(sql, params = []) {
     });
 
     const body = await response.json();
-    
     if (!response.ok) {
         throw new Error(`Turso HTTP Error: ${JSON.stringify(body)}`);
     }
-
     return body;
 }
 
 async function queryTurso(sql, params = []) {
     const data = await executeTursoQuery(sql, params);
-    const results = data.results || data; // Handle both pipeline and legacy
-    const executeResult = results.find(r => r.type === 'execute');
+    const results = data.results || data;
+    const executeResult = results.find(r => r.type === 'execute' || r.kind === 'execute');
     
-    if (executeResult.type === 'error') {
-        throw new Error(executeResult.error.message);
-    }
+    if (!executeResult) throw new Error('Turso response missing execute block');
+    if (executeResult.error) throw new Error(executeResult.error.message);
     
-    return executeResult.response.result;
+    // Support both API v2 formats
+    const result = executeResult.response ? executeResult.response.result : executeResult.result;
+    if (!result) throw new Error('Turso response missing result data');
+    
+    return result;
 }
 
 async function commandTurso(sql, params = []) {
-    const data = await executeTursoQuery(sql, params);
-    const results = data.results || data;
-    const executeResult = results.find(r => r.type === 'execute');
-    
-    if (executeResult.type === 'error') {
-        throw new Error(executeResult.error.message);
-    }
-    
-    return executeResult.response.result;
+    return await queryTurso(sql, params);
 }
 
 window.TursoDB = { query: queryTurso, command: commandTurso };
