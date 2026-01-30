@@ -5,6 +5,7 @@ const TURSO_CONFIG = {
 };
 
 async function executeTursoQuery(sql, params = []) {
+    // Transformar params para o formato do Turso
     const args = params.map(p => {
         if (typeof p === 'string') return { type: 'text', value: p };
         if (typeof p === 'number') return { type: 'integer', value: p };
@@ -26,28 +27,34 @@ async function executeTursoQuery(sql, params = []) {
         })
     });
 
-    const data = await response.json();
     if (!response.ok) {
-        throw new Error(`Turso Error: ${JSON.stringify(data)}`);
+        const err = await response.json();
+        throw new Error(`Turso HTTP Error: ${JSON.stringify(err)}`);
     }
+
+    const data = await response.json();
     return data.results;
 }
 
 async function queryTurso(sql, params = []) {
     const results = await executeTursoQuery(sql, params);
     const executeResult = results.find(r => r.type === 'execute');
+    
     if (executeResult.type === 'error') {
         throw new Error(executeResult.error.message);
     }
+    
     return executeResult.response.result;
 }
 
 async function commandTurso(sql, params = []) {
     const results = await executeTursoQuery(sql, params);
     const executeResult = results.find(r => r.type === 'execute');
+    
     if (executeResult.type === 'error') {
         throw new Error(executeResult.error.message);
     }
+    
     return executeResult.response.result;
 }
 
