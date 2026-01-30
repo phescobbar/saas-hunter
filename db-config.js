@@ -1,7 +1,7 @@
 // Turso Database Configuration
 const TURSO_CONFIG = {
-    url: 'https://alphonse-phescobbar.aws-us-east-2.turso.io', // Mudado libsql:// para https:// para uso com fetch
-    authToken: 'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJWRmpkV3Y0WkVmQ3k3LUl4YjFzdkF3In0.NFroCuQ1LjT1uE_KwcP_Y6ej6soyb2UwBeVUlP_Za5ehGDi0if-cfRgINby4fZ_3pnUk6BkJZunW3F_is-zRDw'
+    url: 'https://alphonse-phescobbar.aws-us-east-2.turso.io',
+    authToken: 'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLCJpYXQiOjE3Njk4MDkzODcsImlkIjoiOTVkODM0MGItZTgyYS00MDY0LTg5ZDctZmRiMmIxNGM3MjQxIiwicmlkIjoiNTVkMDdlYjAtMGI0Yi00NzE5LTk0MDgtMjZhOGM3ZjE4MzlkIn0.rh4kcIVul-KxMnfbDmvDFOeSUuNtNfU_jIst1I18QMBqml4iFUe-uNeS9dBnV1xfuft2zkNnZcPltIU_wLNPDw'
 };
 
 async function executeTursoQuery(sql, params = []) {
