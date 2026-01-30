@@ -1,5 +1,20 @@
 [
     {
+        "id": "senja_io_20260130",
+        "name": "Senja.io",
+        "url": "senja.io",
+        "desc": "Plataforma para coletar, gerenciar e exibir depoimentos em texto e vídeo de forma simplificada.",
+        "mrr": "83300",
+        "customers": "3000+",
+        "ticket": "29",
+        "why": "Resolve a bagunça de coletar prova social manualmente. Transforma depoimentos em ativos de marketing (widgets, imagens) que aumentam conversão.",
+        "stack": "Remix/Next.js, Node.js, PostgreSQL",
+        "time": "5 meses",
+        "cost": "100",
+        "briefing": "Senja.io é uma ferramenta de 'Social Proof' focada em facilitar a coleta de depoimentos.\n\n📌 Diferencial Único:\nEnquanto a maioria das ferramentas foca apenas no armazenamento, a Senja foca na exibição. Eles têm um 'Studio' que transforma depoimentos em artes prontas para redes sociais ou widgets elegantes para sites.\n\n🛠️ Funcionalidades:\n- Coleta de vídeo e texto via link simples.\n- 'Wall of Love' (Mural de depoimentos).\n- Automação de importação (Twitter, Product Hunt, etc).\n- Widgets de alta performance.\n\n💰 Modelo:\nSaaS Freemium ($0 a $99/mês). Foca em Criadores, Freelancers e Micro-SaaS.\n\n🚀 Por que funciona?\nProva social é o fator #1 de conversão hoje. A Senja remove o atrito técnico de pedir e formatar esses depoimentos, permitindo que o usuário foque em vender.",
+        "addedAt": "2026-01-30T13:10:00.000Z"
+    },
+    {
         "id": "siteguru_20260130",
         "name": "SiteGuru",
         "url": "siteguru.co",
