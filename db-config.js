@@ -26,17 +26,18 @@ async function executeTursoQuery(sql, params = []) {
         })
     });
 
-    const data = await response.json();
+    const body = await response.json();
     
     if (!response.ok) {
-        throw new Error(`Turso HTTP Error: ${JSON.stringify(data)}`);
+        throw new Error(`Turso HTTP Error: ${JSON.stringify(body)}`);
     }
 
-    return data.results;
+    return body;
 }
 
 async function queryTurso(sql, params = []) {
-    const results = await executeTursoQuery(sql, params);
+    const data = await executeTursoQuery(sql, params);
+    const results = data.results || data; // Handle both pipeline and legacy
     const executeResult = results.find(r => r.type === 'execute');
     
     if (executeResult.type === 'error') {
@@ -47,7 +48,8 @@ async function queryTurso(sql, params = []) {
 }
 
 async function commandTurso(sql, params = []) {
-    const results = await executeTursoQuery(sql, params);
+    const data = await executeTursoQuery(sql, params);
+    const results = data.results || data;
     const executeResult = results.find(r => r.type === 'execute');
     
     if (executeResult.type === 'error') {
