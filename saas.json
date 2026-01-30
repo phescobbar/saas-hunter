@@ -1,5 +1,20 @@
 [
     {
+        "id": "cuppa_ai_20260129",
+        "name": "Cuppa AI",
+        "url": "cuppa.sh",
+        "desc": "Plataforma de criação de conteúdo SEO-otimizado que usa SUAS chaves de API (OpenAI/Anthropic) para reduzir custos.",
+        "mrr": "59000",
+        "customers": "1000+",
+        "ticket": "60",
+        "why": "Ataca a dor do 'imposto de token' (markup que outras ferramentas cobram). Foca em agências e SEOs que precisam de volume e qualidade técnica.",
+        "stack": "Next.js, Python (Scraping), Integrações LLM diretas",
+        "time": "2 meses",
+        "cost": "150",
+        "briefing": "Cuppa AI é uma ferramenta de geração de conteúdo para SEO em escala.\n\n📌 Diferencial Único:\nAo contrário do Jasper ou Copy.ai, o Cuppa pede que você insira SUA chave da OpenAI. Eles cobram uma assinatura mensal pelo software (Workflow, Editor, Integrações), mas o custo de geração (tokens) você paga direto para a OpenAI a preço de custo.\n\n🛠️ Funcionalidades:\n- Geração de artigos baseada em SERP (analisa o top 10 do Google).\n- 'Programmatic SEO': Geração em massa.\n- Integração direta com WordPress.\n\n💰 Modelo:\nAssinatura SaaS ($30 a $200/mês) + Custo de API do usuário.\n\n🚀 Por que funciona?\nAgências de SEO gastam fortunas com ferramentas 'All-in-one'. O Cuppa promete economia absurda para quem gera muito volume, posicionando-se como a ferramenta 'profissional' e transparente.",
+        "addedAt": "2026-01-29T22:45:00.000Z"
+    },
+    {
         "id": "photoai_20260129",
         "name": "Photo AI",
         "url": "photoai.com",
