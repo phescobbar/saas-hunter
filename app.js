@@ -6,64 +6,86 @@ class SaasHunter {
         this.init();
     }
 
-    init() {
-        this.loadTools();
+    async init() {
         this.bindEvents();
-        this.render();
+        await this.loadTools();
     }
 
     // ===== Storage =====
     async loadTools() {
-        const localSaved = localStorage.getItem('saas_hunter_tools');
-        let localTools = localSaved ? JSON.parse(localSaved) : [];
-
+        this.showLoading(true);
         try {
-            const response = await fetch('saas.json');
-            if (response.ok) {
-                const repoTools = await response.json();
-                const localIds = new Set(localTools.map(t => t.id));
-                const newTools = repoTools.filter(t => !localIds.has(t.id));
-                
-                if (newTools.length > 0) {
-                    localTools = [...newTools, ...localTools];
-                    this.saveTools();
-                }
-            }
-        } catch (e) {
-            console.log('Offline or no saas.json');
-        }
+            const result = await TursoDB.query('SELECT * FROM tools ORDER BY addedAt DESC');
+            
+            // Mapear colunas para objetos JSON
+            const columns = result.cols.map(c => c.name);
+            this.tools = result.rows.map(row => {
+                const tool = {};
+                row.forEach((val, i) => {
+                    tool[columns[i]] = val.value;
+                });
+                return tool;
+            });
 
-        this.tools = localTools;
-        this.render();
-    }
-
-    saveTools() {
-        localStorage.setItem('saas_hunter_tools', JSON.stringify(this.tools));
-    }
-
-    // ===== CRUD =====
-    addTool(data) {
-        const tool = {
-            id: Date.now().toString(36),
-            ...data,
-            addedAt: new Date().toISOString()
-        };
-        this.tools.unshift(tool);
-        this.saveTools();
-        this.render();
-    }
-
-    deleteTool(id) {
-        if (confirm('Remover esta ferramenta?')) {
-            this.tools = this.tools.filter(t => t.id !== id);
-            this.saveTools();
             this.render();
+        } catch (e) {
+            console.error('Erro ao carregar do Turso:', e);
+            // Fallback para local se o DB falhar
+            const localSaved = localStorage.getItem('saas_hunter_tools');
+            this.tools = localSaved ? JSON.parse(localSaved) : [];
+            this.render();
+        } finally {
+            this.showLoading(false);
+        }
+    }
+
+    async saveToolToDB(data) {
+        this.showLoading(true);
+        try {
+            const id = Date.now().toString(36);
+            const addedAt = new Date().toISOString();
+            
+            await TursoDB.command(
+                'INSERT INTO tools (id, name, url, desc, mrr, customers, ticket, why, stack, time, cost, briefing, addedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                [id, data.name, data.url, data.desc, data.mrr, data.customers, data.ticket, data.why, data.stack, data.time, data.cost, data.briefing, addedAt]
+            );
+            
+            await this.loadTools();
+        } catch (e) {
+            console.error('Erro ao salvar no Turso:', e);
+            alert('Erro ao salvar no banco online.');
+        } finally {
+            this.showLoading(false);
+        }
+    }
+
+    async deleteToolFromDB(id) {
+        if (!confirm('Remover esta ferramenta?')) return;
+        
+        this.showLoading(true);
+        try {
+            await TursoDB.command('DELETE FROM tools WHERE id = ?', [id]);
+            await this.loadTools();
+        } catch (e) {
+            console.error('Erro ao deletar do Turso:', e);
+        } finally {
+            this.showLoading(false);
+        }
+    }
+
+    showLoading(show) {
+        const btn = document.getElementById('addSaasBtn');
+        if (show) {
+            btn.classList.add('loading');
+            btn.disabled = true;
+        } else {
+            btn.classList.remove('loading');
+            btn.disabled = false;
         }
     }
 
     // ===== Events =====
     bindEvents() {
-        // Add Modal
         const modal = document.getElementById('addModal');
         const openBtn = document.getElementById('addSaasBtn');
         const closeBtns = [document.getElementById('closeModal'), document.getElementById('cancelAdd')];
@@ -72,7 +94,7 @@ class SaasHunter {
         openBtn.onclick = () => modal.classList.add('open');
         closeBtns.forEach(b => b.onclick = () => modal.classList.remove('open'));
         
-        saveBtn.onclick = () => {
+        saveBtn.onclick = async () => {
             const data = {
                 name: document.getElementById('saasName').value.trim(),
                 url: document.getElementById('saasUrl').value.trim(),
@@ -88,7 +110,7 @@ class SaasHunter {
             };
 
             if (data.name && data.url) {
-                this.addTool(data);
+                await this.saveToolToDB(data);
                 modal.classList.remove('open');
                 document.querySelectorAll('input, textarea').forEach(el => el.value = '');
             } else {
@@ -96,29 +118,24 @@ class SaasHunter {
             }
         };
 
-        // Briefing Modal
         const briefingModal = document.getElementById('briefingModal');
         const closeBriefingBtns = [document.getElementById('closeBriefing'), document.getElementById('closeBriefingBtn')];
-        
         closeBriefingBtns.forEach(b => b.onclick = () => briefingModal.classList.remove('open'));
 
-        // Search
         document.getElementById('searchInput').addEventListener('input', (e) => {
             this.render(e.target.value);
         });
     }
 
-    // ===== Features =====
     showBriefing(id) {
         const tool = this.tools.find(t => t.id === id);
         if (tool && tool.briefing) {
-            document.getElementById('briefingTitle').textContent = `Briefing: ${tool.name}`;
+            document.getElementById('briefingTitle').textContent = \`Briefing: \${tool.name}\`;
             document.getElementById('briefingContent').textContent = tool.briefing;
             document.getElementById('briefingModal').classList.add('open');
         }
     }
 
-    // ===== Render =====
     render(query = '') {
         const grid = document.getElementById('saasGrid');
         const emptyState = document.getElementById('emptyState');
@@ -143,45 +160,45 @@ class SaasHunter {
         }
 
         emptyState.classList.remove('visible');
-        grid.innerHTML = filtered.map(tool => `
+        grid.innerHTML = filtered.map(tool => \`
             <div class="saas-card">
                 <div class="saas-header">
-                    <h3 class="saas-title">${tool.name}</h3>
+                    <h3 class="saas-title">\${tool.name}</h3>
                     <div style="display:flex;gap:0.5rem">
-                        ${tool.briefing ? `<button onclick="hunter.showBriefing('${tool.id}')" class="btn-briefing">Ver Briefing</button>` : ''}
-                        <button onclick="hunter.deleteTool('${tool.id}')" style="background:none;border:none;color:var(--text-secondary);cursor:pointer">&times;</button>
+                        \${tool.briefing ? \`<button onclick="hunter.showBriefing('\${tool.id}')" class="btn-briefing">Ver Briefing</button>\` : ''}
+                        <button onclick="hunter.deleteToolFromDB('\${tool.id}')" style="background:none;border:none;color:var(--text-secondary);cursor:pointer">&times;</button>
                     </div>
                 </div>
-                <a href="${tool.url.startsWith('http') ? tool.url : 'https://' + tool.url}" target="_blank" class="saas-link">
+                <a href="\${tool.url.startsWith('http') ? tool.url : 'https://' + tool.url}" target="_blank" class="saas-link">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px">
                         <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
                         <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
                     </svg>
-                    ${tool.url}
+                    \${tool.url}
                 </a>
-                <p class="saas-desc">${tool.desc || 'Sem descrição.'}</p>
+                <p class="saas-desc">\${tool.desc || 'Sem descrição.'}</p>
                 
-                ${tool.mrr || tool.customers ? `
+                \${tool.mrr || tool.customers ? \`
                 <div class="saas-stats" style="display:flex;gap:1rem;margin:1rem 0;font-family:var(--font-mono);font-size:0.8rem;color:var(--accent-primary)">
-                    ${tool.mrr ? `<span>💰 $${tool.mrr}/mês</span>` : ''}
-                    ${tool.customers ? `<span>👥 ${tool.customers} clientes</span>` : ''}
+                    \${tool.mrr ? \`<span>💰 $\${tool.mrr}/mês</span>\` : ''}
+                    \${tool.customers ? \`<span>👥 \${tool.customers} clientes</span>\` : ''}
                 </div>
-                ` : ''}
+                \` : ''}
 
-                ${tool.stack ? `
+                \${tool.stack ? \`
                 <div class="saas-stack" style="font-size:0.75rem;color:var(--text-secondary);margin-bottom:0.5rem">
-                    🛠️ ${tool.stack}
+                    🛠️ \${tool.stack}
                 </div>
-                ` : ''}
+                \` : ''}
 
                 <div class="saas-meta">
-                    <span>Adicionado em ${new Date(tool.addedAt).toLocaleDateString()}</span>
+                    <span>Adicionado em \${new Date(tool.addedAt).toLocaleDateString()}</span>
                 </div>
             </div>
-        `).join('');
+        \`).join('');
     }
 }
 
 // Init
 const hunter = new SaasHunter();
-window.hunter = hunter; // Expose for onclick handlers
+window.hunter = hunter;
