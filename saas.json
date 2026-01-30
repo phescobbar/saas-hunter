@@ -1,5 +1,20 @@
 [
     {
+        "id": "photoai_20260129",
+        "name": "Photo AI",
+        "url": "photoai.com",
+        "desc": "O primeiro 'Fotógrafo IA'. Treine modelos com suas selfies e gere fotos profissionais em qualquer cenário ou roupa.",
+        "mrr": "132000",
+        "customers": "5000+",
+        "ticket": "29",
+        "why": "Resolve a dor de tirar fotos profissionais (caro, demorado). Foca em nichos de alta demanda: Tinder, LinkedIn, Influencers. A interface de 'Packs' gamifica o uso.",
+        "stack": "PHP/jQuery (Pieter Levels style), Stable Diffusion (Replicate/Fal.ai), Vercel",
+        "time": "1 mês",
+        "cost": "100",
+        "briefing": "Photo AI é uma plataforma de fotografia sintética criada por Pieter Levels. A premissa é 'Demitir seu fotógrafo'.\n\n📌 O Que Faz:\nO usuário faz upload de 15-20 selfies. O sistema treina um modelo IA (LoRA) específico para essa pessoa. Depois, o usuário pode gerar fotos photorealistas em milhares de cenários pré-configurados (Packs).\n\n🛠️ Funcionalidades Chave:\n- Treinamento de Modelo Pessoal (Avatar)\n- Photo Packs: Coleções prontas de prompts (ex: 'LinkedIn Headshot', 'Tinder Date', 'Cyberpunk', 'Old Money').\n- Try-On de Roupas: Vestir o modelo com roupas de e-commerce.\n- Vídeo AI: Gerar vídeos curtos a partir das fotos.\n\n💰 Modelo de Negócio:\nAssinatura recorrente (SaaS) com tier de entrada alto ($29/mês) focada em uso profissional/influencer.\n\n🚀 Por que cresce?\nAtaca a vaidade e necessidade profissional. Fotos boas para Tinder/LinkedIn aumentam status social. A UX de 'Packs' remove a complexidade da engenharia de prompt.\n\n💡 Ideia de Micro-SaaS Derivado:\n'Pet Photo AI' - Focado apenas em gerar fotos profissionais de cachorros/gatos para Instagram de pets.",
+        "addedAt": "2026-01-29T21:23:00.000Z"
+    },
+    {
         "id": "bannerbear_init",
         "name": "Bannerbear",
         "url": "bannerbear.com",
