@@ -35,14 +35,14 @@ async function executeTursoQuery(sql, params = []) {
 
 async function queryTurso(sql, params = []) {
     const data = await executeTursoQuery(sql, params);
-    const results = data.results || data;
+    // Find result in the pipeline response array
+    const results = data.results || (Array.isArray(data) ? data : [data]);
     const executeResult = results.find(r => r.type === 'execute' || r.kind === 'execute');
     
     if (!executeResult) throw new Error('Turso response missing execute block');
     if (executeResult.error) throw new Error(executeResult.error.message);
     
-    // Support both API v2 formats
-    const result = executeResult.response ? executeResult.response.result : executeResult.result;
+    const result = executeResult.response ? executeResult.response.result : (executeResult.result || executeResult);
     if (!result) throw new Error('Turso response missing result data');
     
     return result;
