@@ -28,18 +28,22 @@ async function queryTurso(sql, params = []) {
     const data = await response.json();
     if (!response.ok) throw new Error(`Turso Error: ${JSON.stringify(data)}`);
     
-    // Procura por um resultado que não seja do tipo 'close'
+    // Procura por um resultado do tipo 'execute' dentro de 'results'
     const executeResult = data.results.find(r => r.type === 'ok' && r.response && r.response.type === 'execute');
     
     if (!executeResult) {
+        // Se não achou 'ok', procura por erro específico
         const errorResult = data.results.find(r => r.type === 'error');
-        throw new Error(errorResult ? errorResult.error.message : 'Turso execution failed without specific error');
+        if (errorResult) throw new Error(errorResult.error.message);
+        throw new Error('Turso response format unexpected: ' + JSON.stringify(data));
     }
     
     const result = executeResult.response.result;
+    
+    // Converte o formato do Turso para o formato que o app.js espera
     return {
         cols: result.cols.map(c => ({ name: c.name })),
-        rows: result.rows.map(row => row.map(cell => ({ value: cell.value })))
+        rows: result.rows.map(row => row.map(cell => ({ value: cell })))
     };
 }
 
