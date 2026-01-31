@@ -1,50 +1,13 @@
-# Metodologia SaaS Hunter: Encontrar SaaS Replicáveis 🎯
+# Metodologia de Pesquisa SaaS Hunter
 
-**Objetivo:** Encontrar 1 SaaS com receita real (>$5K MRR), tecnicamente simples de construir.
+Para cada ferramenta encontrada, o Alphonse deve elaborar um briefing detalhado (aprox. 500 palavras) seguindo esta estrutura:
 
-## 1. Buscar produtos com tração
-Pesquisar em **Indie Hackers, Hacker News, Product Hunt e Twitter (#buildinpublic)** por:
-*   Produtos que compartilharam métricas de receita (MRR, ARR, clientes pagos).
-*   Lançamentos recentes com evidência de pagantes.
+1.  **Visão Geral e Proposta de Valor:** O que o produto faz, para quem e qual o problema exato que resolve.
+2.  **A Jornada do Fundador (Bootstrapping):** Como começou, quanto tempo levou para atingir ramen profitability e marcos de receita.
+3.  **Diferencial Competitivo:** Por que os clientes escolhem esta ferramenta em vez de gigantes (Google, Jasper, etc.).
+4.  **Análise de Produto-Led Growth (PLG):** Como o produto se vende sozinho (widgets, badges, marketing orgânico).
+5.  **Análise Técnica e Viabilidade:** Stack utilizado, complexidade de replicação e custos operacionais estimados.
+6.  **Oportunidade de Micro-SaaS Derivado:** Uma ideia de nicho ainda menor baseada no sucesso desta ferramenta.
 
-## 2. Filtrar rapidamente
-Manter apenas produtos que:
-*   ✅ Têm receita comprovada (não só usuários gratuitos).
-*   ✅ Têm pricing público.
-*   ✅ Não dependem de ML complexo ou hardware.
-
-## 3. Investigar o melhor candidato
-Buscar no site oficial e fontes do fundador:
-*   MRR/ARR e número de clientes.
-*   Preço cobrado.
-*   Problema que resolve.
-*   Público alvo.
-
-## 4. Analisar (Output Esperado)
-Para cada produto selecionado, gerar o seguinte relatório:
-
-```markdown
-# [Nome do Produto]
-
-## O que é
-[O que faz, quando lançou, principal métrica]
-
-## Tração
-- MRR: $X | Clientes: Y | Ticket: $Z
-- Fonte: [URL]
-
-## Por que funciona
-[2-3 fatores de sucesso]
-
-## Como replicar
-- Stack: [tecnologias]
-- Tempo MVP: [estimativa]
-- Custo mensal: [estimativa]
-
-## Oportunidades similares
-[2-3 nichos adjacentes]
-```
-
-## ⚠️ Regras de Pesquisa (Brave API)
-*   **Rate Limit:** Respeitar intervalo de **3 segundos** entre cada requisição à API do Brave.
-*   **Foco:** Validar receita real, não métricas de vaidade.
+---
+*Atualizado em 2026-01-31 por Alphonse 🎩.*
