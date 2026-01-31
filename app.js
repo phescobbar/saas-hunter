@@ -12,7 +12,6 @@ class SaasHunter {
         if (window.TursoDB) {
             await this.loadTools();
         } else {
-            // Polling curto se carregar fora de ordem
             const checkDB = setInterval(async () => {
                 if (window.TursoDB) {
                     clearInterval(checkDB);
@@ -26,22 +25,26 @@ class SaasHunter {
     async loadTools() {
         this.showLoading(true);
         try {
-            const result = await TursoDB.query('SELECT * FROM tools ORDER BY addedAt DESC');
+            const result = await window.TursoDB.query('SELECT * FROM tools ORDER BY addedAt DESC');
             
-            // Mapear colunas para objetos JSON
-            const columns = result.cols.map(c => c.name);
-            this.tools = result.rows.map(row => {
-                const tool = {};
-                row.forEach((val, i) => {
-                    tool[columns[i]] = val.value;
+            if (!result || !result.rows) {
+                console.warn('Turso returned empty or invalid result');
+                this.tools = [];
+            } else {
+                const columns = result.cols.map(c => c.name);
+                this.tools = result.rows.map(row => {
+                    const tool = {};
+                    row.forEach((val, i) => {
+                        // Trata o formato de célula do Turso {value: x}
+                        tool[columns[i]] = (val && typeof val === 'object' && 'value' in val) ? val.value : val;
+                    });
+                    return tool;
                 });
-                return tool;
-            });
+            }
 
             this.render();
         } catch (e) {
             console.error('Erro ao carregar do Turso:', e);
-            // Fallback para local se o DB falhar
             const localSaved = localStorage.getItem('saas_hunter_tools');
             this.tools = localSaved ? JSON.parse(localSaved) : [];
             this.render();
@@ -56,7 +59,7 @@ class SaasHunter {
             const id = Date.now().toString(36);
             const addedAt = new Date().toISOString();
             
-            await TursoDB.command(
+            await window.TursoDB.command(
                 'INSERT INTO tools (id, name, url, desc, mrr, customers, ticket, why, stack, time, cost, briefing, addedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                 [id, data.name, data.url, data.desc, data.mrr, data.customers, data.ticket, data.why, data.stack, data.time, data.cost, data.briefing, addedAt]
             );
@@ -75,7 +78,7 @@ class SaasHunter {
         
         this.showLoading(true);
         try {
-            await TursoDB.command('DELETE FROM tools WHERE id = ?', [id]);
+            await window.TursoDB.command('DELETE FROM tools WHERE id = ?', [id]);
             await this.loadTools();
         } catch (e) {
             console.error('Erro ao deletar do Turso:', e);
@@ -164,8 +167,8 @@ class SaasHunter {
         if (query) {
             const q = query.toLowerCase();
             filtered = this.tools.filter(t => 
-                t.name.toLowerCase().includes(q) || 
-                t.desc.toLowerCase().includes(q) ||
+                (t.name && t.name.toLowerCase().includes(q)) || 
+                (t.desc && t.desc.toLowerCase().includes(q)) ||
                 (t.stack && t.stack.toLowerCase().includes(q))
             );
         }
@@ -188,7 +191,7 @@ class SaasHunter {
                         <button onclick="hunter.deleteToolFromDB('${tool.id}')" style="background:none;border:none;color:var(--text-secondary);cursor:pointer">&times;</button>
                     </div>
                 </div>
-                <a href="${tool.url.startsWith('http') ? tool.url : 'https://' + tool.url}" target="_blank" class="saas-link">
+                <a href="${(tool.url && tool.url.startsWith('http')) ? tool.url : 'https://' + tool.url}" target="_blank" class="saas-link">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px">
                         <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
                         <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
