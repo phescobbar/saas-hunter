@@ -6,6 +6,7 @@
     --text-primary: #f3f4f6;
     --text-secondary: #9ca3af;
     --border-color: #27272a;
+    --danger: #ef4444;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -111,6 +112,8 @@ body {
     border-radius: 1rem;
     padding: 1.5rem;
     transition: transform 0.2s, border-color 0.2s;
+    display: flex;
+    flex-direction: column;
 }
 .saas-card:hover {
     transform: translateY(-4px);
@@ -147,6 +150,7 @@ body {
     border-top: 1px solid var(--border-color);
     font-size: 0.75rem;
     color: #71717a;
+    margin-top: auto;
 }
 
 /* Buttons */
@@ -166,6 +170,21 @@ body {
 .btn-primary:hover { background: var(--accent-secondary); }
 .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
 
+.btn-secondary {
+    background: #27272a;
+    color: white;
+    border: 1px solid var(--border-color);
+    padding: 0.6rem 1.2rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.btn-secondary:hover { 
+    background: #3f3f46; 
+    border-color: #52525b;
+}
+
 .btn-briefing {
     background: rgba(16, 185, 129, 0.1);
     color: var(--accent-primary);
@@ -179,12 +198,31 @@ body {
 }
 .btn-briefing:hover { background: rgba(16, 185, 129, 0.2); }
 
+.btn-close {
+    background: #27272a;
+    border: 1px solid var(--border-color);
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.25rem;
+    transition: all 0.2s;
+}
+.btn-close:hover { 
+    background: var(--danger); 
+    border-color: var(--danger);
+}
+
 /* Modals */
 .modal-overlay {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(4px);
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -199,50 +237,78 @@ body {
 .modal {
     background: #18181b;
     border: 1px solid var(--border-color);
-    border-radius: 1rem;
+    border-radius: 1.25rem;
     width: 100%;
-    max-width: 800px;
+    max-width: 850px;
     max-height: 90vh;
     display: flex;
     flex-direction: column;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 }
 .modal-header {
-    padding: 1.5rem;
+    padding: 1.5rem 2rem;
     border-bottom: 1px solid var(--border-color);
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 .modal-body {
-    padding: 1.5rem;
+    padding: 2rem;
     overflow-y: auto;
 }
 .modal-footer {
-    padding: 1.25rem;
+    padding: 1.5rem 2rem;
     border-top: 1px solid var(--border-color);
     display: flex;
     justify-content: flex-end;
     gap: 1rem;
 }
 
-/* Briefing Specific */
+/* Briefing Visuals */
+.briefing-card {
+    background: #09090b;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    border: 1px solid var(--border-color);
+}
 .briefing-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
+    gap: 2rem;
+    margin-bottom: 2rem;
 }
 .briefing-section h4 {
     color: var(--accent-primary);
-    margin-bottom: 0.75rem;
-    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.1em;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 .briefing-section p {
-    font-size: 0.95rem;
-    margin-bottom: 0.5rem;
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+    color: var(--text-primary);
+}
+.briefing-section strong {
+    color: var(--text-secondary);
+    font-weight: 500;
+    margin-right: 0.5rem;
 }
 .full-width { grid-column: 1 / -1; }
+
+.briefing-text {
+    white-space: pre-wrap;
+    line-height: 1.8;
+    color: var(--text-primary);
+    font-size: 1.05rem;
+    background: rgba(255,255,255,0.02);
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    border-left: 4px solid var(--accent-primary);
+}
 
 /* Form Styles */
 .form-group { margin-bottom: 1.25rem; }
