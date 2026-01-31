@@ -29,16 +29,11 @@ async function queryTurso(sql, params = []) {
     if (!response.ok) throw new Error(`Turso Error: ${JSON.stringify(data)}`);
     
     // Procura por um resultado que não seja do tipo 'close'
-    const executeResult = data.results.find(r => r.response && r.response.type === 'execute');
+    const executeResult = data.results.find(r => r.type === 'ok' && r.response && r.response.type === 'execute');
     
     if (!executeResult) {
-        // Verifica se há erro global ou em algum statement
         const errorResult = data.results.find(r => r.type === 'error');
         throw new Error(errorResult ? errorResult.error.message : 'Turso execution failed without specific error');
-    }
-    
-    if (executeResult.type === 'error') {
-        throw new Error(executeResult.error.message);
     }
     
     const result = executeResult.response.result;
