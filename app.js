@@ -1,4 +1,4 @@
-// ===== SaaS Hunter - App Logic =====
+// ===== SaaS Hunter - App Logic (Turso DB Version) =====
 
 class SaasHunter {
     constructor() {
@@ -8,7 +8,6 @@ class SaasHunter {
 
     async init() {
         this.bindEvents();
-        // Garantir que TursoDB existe antes de carregar
         if (window.TursoDB) {
             await this.loadTools();
         } else {
@@ -28,14 +27,12 @@ class SaasHunter {
             const result = await window.TursoDB.query('SELECT * FROM tools ORDER BY addedAt DESC');
             
             if (!result || !result.rows) {
-                console.warn('Turso returned empty or invalid result');
                 this.tools = [];
             } else {
                 const columns = result.cols.map(c => c.name);
                 this.tools = result.rows.map(row => {
                     const tool = {};
                     row.forEach((val, i) => {
-                        // Trata o formato de célula do Turso {value: x}
                         tool[columns[i]] = (val && typeof val === 'object' && 'value' in val) ? val.value : val;
                     });
                     return tool;
@@ -45,8 +42,6 @@ class SaasHunter {
             this.render();
         } catch (e) {
             console.error('Erro ao carregar do Turso:', e);
-            const localSaved = localStorage.getItem('saas_hunter_tools');
-            this.tools = localSaved ? JSON.parse(localSaved) : [];
             this.render();
         } finally {
             this.showLoading(false);
@@ -68,20 +63,6 @@ class SaasHunter {
         } catch (e) {
             console.error('Erro ao salvar no Turso:', e);
             alert('Erro ao salvar no banco online.');
-        } finally {
-            this.showLoading(false);
-        }
-    }
-
-    async deleteToolFromDB(id) {
-        if (!confirm('Remover esta ferramenta?')) return;
-        
-        this.showLoading(true);
-        try {
-            await window.TursoDB.command('DELETE FROM tools WHERE id = ?', [id]);
-            await this.loadTools();
-        } catch (e) {
-            console.error('Erro ao deletar do Turso:', e);
         } finally {
             this.showLoading(false);
         }
@@ -149,9 +130,37 @@ class SaasHunter {
 
     showBriefing(id) {
         const tool = this.tools.find(t => t.id === id);
-        if (tool && tool.briefing) {
-            document.getElementById('briefingTitle').textContent = `Briefing: ${tool.name}`;
-            document.getElementById('briefingContent').textContent = tool.briefing;
+        if (tool) {
+            document.getElementById('briefingTitle').textContent = `Ficha Técnica: ${tool.name}`;
+            
+            let html = `
+                <div class="briefing-grid">
+                    <div class="briefing-section">
+                        <h4>📊 Tração e Mercado</h4>
+                        <p><strong>MRR:</strong> $${tool.mrr || 'N/A'}</p>
+                        <p><strong>Clientes:</strong> ${tool.customers || 'N/A'}</p>
+                        <p><strong>Ticket Médio:</strong> $${tool.ticket || 'N/A'}</p>
+                    </div>
+                    <div class="briefing-section">
+                        <h4>🛠️ Desenvolvimento</h4>
+                        <p><strong>Stack:</strong> ${tool.stack || 'N/A'}</p>
+                        <p><strong>Tempo MVP:</strong> ${tool.time || 'N/A'}</p>
+                        <p><strong>Custo Mensal:</strong> $${tool.cost || 'N/A'}</p>
+                    </div>
+                </div>
+                <div class="briefing-section full-width" style="margin-top:1.5rem">
+                    <h4>🧠 Por que funciona?</h4>
+                    <p>${tool.why || 'N/A'}</p>
+                </div>
+                <div class="briefing-section full-width" style="margin-top:1.5rem; border-top: 1px solid var(--border-color); padding-top: 1.5rem">
+                    <h4>📝 Briefing Detalhado</h4>
+                    <div style="white-space: pre-wrap; line-height: 1.6; color: var(--text-secondary)">
+                        ${tool.briefing || 'Sem briefing detalhado.'}
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('briefingContent').innerHTML = html;
             document.getElementById('briefingModal').classList.add('open');
         }
     }
@@ -187,8 +196,7 @@ class SaasHunter {
                 <div class="saas-header">
                     <h3 class="saas-title">${tool.name}</h3>
                     <div style="display:flex;gap:0.5rem">
-                        ${tool.briefing ? `<button onclick="hunter.showBriefing('${tool.id}')" class="btn-briefing">Ver Briefing</button>` : ''}
-                        <button onclick="hunter.deleteToolFromDB('${tool.id}')" style="background:none;border:none;color:var(--text-secondary);cursor:pointer">&times;</button>
+                        <button onclick="hunter.showBriefing('${tool.id}')" class="btn-briefing">Ver Ficha Completa</button>
                     </div>
                 </div>
                 <a href="${(tool.url && tool.url.startsWith('http')) ? tool.url : 'https://' + tool.url}" target="_blank" class="saas-link">
@@ -204,12 +212,6 @@ class SaasHunter {
                 <div class="saas-stats" style="display:flex;gap:1rem;margin:1rem 0;font-family:var(--font-mono);font-size:0.8rem;color:var(--accent-primary)">
                     ${tool.mrr ? `<span>💰 $${tool.mrr}/mês</span>` : ''}
                     ${tool.customers ? `<span>👥 ${tool.customers} clientes</span>` : ''}
-                </div>
-                ` : ''}
-
-                ${tool.stack ? `
-                <div class="saas-stack" style="font-size:0.75rem;color:var(--text-secondary);margin-bottom:0.5rem">
-                    🛠️ ${tool.stack}
                 </div>
                 ` : ''}
 
