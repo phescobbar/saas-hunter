@@ -26,24 +26,21 @@ async function queryTurso(sql, params = []) {
     });
 
     const data = await response.json();
-    if (!response.ok) throw new Error(`Turso Error: ${JSON.stringify(data)}`);
+    if (!response.ok) throw new Error(`Turso HTTP Error: ${JSON.stringify(data)}`);
     
-    // Procura por um resultado do tipo 'execute' dentro de 'results'
     const executeResult = data.results.find(r => r.type === 'ok' && r.response && r.response.type === 'execute');
     
     if (!executeResult) {
-        // Se não achou 'ok', procura por erro específico
         const errorResult = data.results.find(r => r.type === 'error');
-        if (errorResult) throw new Error(errorResult.error.message);
-        throw new Error('Turso response format unexpected');
+        throw new Error(errorResult ? errorResult.error.message : 'Turso format error');
     }
     
     const result = executeResult.response.result;
     
-    // Converte o formato do Turso para o formato que o app.js espera
+    // Transforma o formato do Turso (array de células com {type, value}) em objetos simples
     return {
         cols: result.cols.map(c => ({ name: c.name })),
-        rows: result.rows.map(row => row.map(cell => ({ value: cell })))
+        rows: result.rows.map(row => row.map(cell => ({ value: cell.value })))
     };
 }
 
