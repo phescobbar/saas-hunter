@@ -35,7 +35,7 @@ async function queryTurso(sql, params = []) {
         // Se não achou 'ok', procura por erro específico
         const errorResult = data.results.find(r => r.type === 'error');
         if (errorResult) throw new Error(errorResult.error.message);
-        throw new Error('Turso response format unexpected: ' + JSON.stringify(data));
+        throw new Error('Turso response format unexpected');
     }
     
     const result = executeResult.response.result;
